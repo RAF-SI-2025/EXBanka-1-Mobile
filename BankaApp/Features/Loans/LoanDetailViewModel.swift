@@ -2,29 +2,30 @@ import Foundation
 import Combine
 
 @MainActor
-final class HomeViewModel: ObservableObject {
-    @Published var profile: ClientProfile?
+final class LoanDetailViewModel: ObservableObject {
+    @Published var installments: [LoanInstallment] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
 
     private let appState: AppState
+    let loanId: Int
 
-    init(appState: AppState) {
+    init(loanId: Int, appState: AppState = .shared) {
+        self.loanId = loanId
         self.appState = appState
     }
 
-    func loadProfile() async {
+    func loadInstallments() async {
         guard let token = appState.accessToken else { return }
         isLoading = true
         defer { isLoading = false }
         do {
-            let profile: ClientProfile = try await APIClient.shared.request(
-                endpoint: .me,
+            let response: InstallmentsResponse = try await APIClient.shared.request(
+                endpoint: .myLoanInstallments(loanId: loanId),
                 accessToken: token,
                 deviceId: appState.deviceId
             )
-            self.profile = profile
-            appState.currentUser = profile
+            self.installments = response.installments
         } catch {
             errorMessage = error.localizedDescription
         }

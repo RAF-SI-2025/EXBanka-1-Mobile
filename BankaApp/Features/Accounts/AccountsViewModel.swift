@@ -20,7 +20,8 @@ final class AccountsViewModel: ObservableObject {
         do {
             let response: AccountsResponse = try await APIClient.shared.request(
                 endpoint: .myAccounts,
-                accessToken: token
+                accessToken: token,
+                deviceId: appState.deviceId
             )
             self.accounts = response.accounts
         } catch {

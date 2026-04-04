@@ -2,29 +2,28 @@ import Foundation
 import Combine
 
 @MainActor
-final class HomeViewModel: ObservableObject {
-    @Published var profile: ClientProfile?
+final class TransferHistoryViewModel: ObservableObject {
+    @Published var transfers: [Transfer] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
 
     private let appState: AppState
 
-    init(appState: AppState) {
+    init(appState: AppState = .shared) {
         self.appState = appState
     }
 
-    func loadProfile() async {
+    func loadTransfers() async {
         guard let token = appState.accessToken else { return }
         isLoading = true
         defer { isLoading = false }
         do {
-            let profile: ClientProfile = try await APIClient.shared.request(
-                endpoint: .me,
+            let response: TransfersResponse = try await APIClient.shared.request(
+                endpoint: .myTransfers,
                 accessToken: token,
                 deviceId: appState.deviceId
             )
-            self.profile = profile
-            appState.currentUser = profile
+            self.transfers = response.transfers
         } catch {
             errorMessage = error.localizedDescription
         }

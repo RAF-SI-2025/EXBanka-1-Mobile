@@ -32,6 +32,11 @@ struct SideMenuView: View {
                 }
                 .simultaneousGesture(TapGesture().onEnded { isOpen = false })
 
+                NavigationLink(destination: DeviceInfoView()) {
+                    MenuRow(icon: "iphone", label: "Device")
+                }
+                .simultaneousGesture(TapGesture().onEnded { isOpen = false })
+
                 Button(action: { themeManager.toggle() }) {
                     MenuRow(
                         icon: themeManager.isDarkMode ? "sun.max.fill" : "moon.fill",
@@ -58,13 +63,14 @@ struct SideMenuView: View {
     }
 
     private func logout() async {
-        if let refreshToken = appState.refreshToken {
+        WebSocketManager.shared.disconnect()
+        if let token = appState.accessToken, let deviceId = appState.deviceId {
             _ = try? await APIClient.shared.request(
-                endpoint: .logout,
-                body: LogoutRequest(refreshToken: refreshToken)
-            ) as MessageResponse
+                endpoint: .mobileDeviceDeactivate,
+                accessToken: token,
+                deviceId: deviceId
+            ) as DeviceActionResponse
         }
-        KeychainService.deleteAll()
         appState.logout()
         isOpen = false
     }

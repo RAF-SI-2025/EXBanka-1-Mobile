@@ -2,53 +2,39 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var themeManager: ThemeManager
     @StateObject private var viewModel: HomeViewModel
-    @State private var isMenuOpen: Bool = false
+    @StateObject private var wsManager = WebSocketManager.shared
 
     init() {
         _viewModel = StateObject(wrappedValue: HomeViewModel(appState: AppState.shared))
     }
 
     var body: some View {
-        NavigationStack {
-            ZStack(alignment: .trailing) {
-                Color.appBackground.ignoresSafeArea()
+        ZStack {
+            Color.appBackground.ignoresSafeArea()
 
-                ScrollView {
-                    VStack(spacing: AppTheme.padding) {
-                        WelcomeCard(
-                            profile: viewModel.profile,
-                            isLoading: viewModel.isLoading,
-                            errorMessage: viewModel.errorMessage,
-                        )
+            ScrollView {
+                VStack(spacing: AppTheme.padding) {
+                    WelcomeCard(
+                        profile: viewModel.profile,
+                        isLoading: viewModel.isLoading,
+                        errorMessage: viewModel.errorMessage
+                    )
 
-                        AccountsListView()
-                    }
-                    .padding(AppTheme.padding)
+                    AccountsListView()
                 }
-                .navigationTitle("")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: { withAnimation(.easeInOut) { isMenuOpen.toggle() } }) {
-                            Image(systemName: "line.3.horizontal")
-                                .foregroundColor(.appForeground)
-                        }
-                    }
-                }
-
-                if isMenuOpen {
-                    Color.black.opacity(0.3)
-                        .ignoresSafeArea()
-                        .onTapGesture { withAnimation(.easeInOut) { isMenuOpen = false } }
-
-                    SideMenuView(isOpen: $isMenuOpen)
-                        .transition(.move(edge: .trailing))
-                }
+                .padding(AppTheme.padding)
             }
         }
+        .navigationTitle("Home")
+        .navigationBarTitleDisplayMode(.inline)
         .task { await viewModel.loadProfile() }
+        .onAppear {
+            if let token = AppState.shared.accessToken,
+               let deviceId = AppState.shared.deviceId {
+                wsManager.connect(accessToken: token, deviceId: deviceId)
+            }
+        }
     }
 }
 
