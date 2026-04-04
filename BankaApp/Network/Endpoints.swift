@@ -28,6 +28,23 @@ enum Endpoint {
     // WebSocket
     case mobileWebSocket
 
+    // Client read-only views
+    case myAccountDetail(id: Int)
+    case myCards
+    case myCardDetail(id: Int)
+    case myPayments
+    case myPaymentDetail(id: Int)
+    case myTransfers
+    case myTransferDetail(id: Int)
+    case myLoans
+    case myLoanDetail(id: Int)
+    case myLoanInstallments(loanId: Int)
+    case myPortfolio
+    case myPortfolioSummary
+    case myOrders
+    case myOrderDetail(id: Int)
+    case exchangeRates
+
     var urlString: String {
         switch self {
         case .login:
@@ -65,6 +82,36 @@ enum Endpoint {
 
         case .mobileWebSocket:
             return "ws://localhost:8080/ws/mobile"
+        case .myAccountDetail(let id):
+            return "\(Endpoint.baseURL)/api/me/accounts/\(id)"
+        case .myCards:
+            return "\(Endpoint.baseURL)/api/me/cards"
+        case .myCardDetail(let id):
+            return "\(Endpoint.baseURL)/api/me/cards/\(id)"
+        case .myPayments:
+            return "\(Endpoint.baseURL)/api/me/payments"
+        case .myPaymentDetail(let id):
+            return "\(Endpoint.baseURL)/api/me/payments/\(id)"
+        case .myTransfers:
+            return "\(Endpoint.baseURL)/api/me/transfers"
+        case .myTransferDetail(let id):
+            return "\(Endpoint.baseURL)/api/me/transfers/\(id)"
+        case .myLoans:
+            return "\(Endpoint.baseURL)/api/me/loans"
+        case .myLoanDetail(let id):
+            return "\(Endpoint.baseURL)/api/me/loans/\(id)"
+        case .myLoanInstallments(let id):
+            return "\(Endpoint.baseURL)/api/me/loans/\(id)/installments"
+        case .myPortfolio:
+            return "\(Endpoint.baseURL)/api/me/portfolio"
+        case .myPortfolioSummary:
+            return "\(Endpoint.baseURL)/api/me/portfolio/summary"
+        case .myOrders:
+            return "\(Endpoint.baseURL)/api/me/orders"
+        case .myOrderDetail(let id):
+            return "\(Endpoint.baseURL)/api/me/orders/\(id)"
+        case .exchangeRates:
+            return "\(Endpoint.baseURL)/api/exchange/rates"
         }
     }
 
@@ -87,6 +134,21 @@ enum Endpoint {
         case .submitVerification(let id): return "/api/mobile/verifications/\(id)/submit"
         case .qrVerify(let id): return "/api/verify/\(id)"
         case .mobileWebSocket: return "/ws/mobile"
+        case .myAccountDetail(let id): return "/api/me/accounts/\(id)"
+        case .myCards: return "/api/me/cards"
+        case .myCardDetail(let id): return "/api/me/cards/\(id)"
+        case .myPayments: return "/api/me/payments"
+        case .myPaymentDetail(let id): return "/api/me/payments/\(id)"
+        case .myTransfers: return "/api/me/transfers"
+        case .myTransferDetail(let id): return "/api/me/transfers/\(id)"
+        case .myLoans: return "/api/me/loans"
+        case .myLoanDetail(let id): return "/api/me/loans/\(id)"
+        case .myLoanInstallments(let id): return "/api/me/loans/\(id)/installments"
+        case .myPortfolio: return "/api/me/portfolio"
+        case .myPortfolioSummary: return "/api/me/portfolio/summary"
+        case .myOrders: return "/api/me/orders"
+        case .myOrderDetail(let id): return "/api/me/orders/\(id)"
+        case .exchangeRates: return "/api/exchange/rates"
         }
     }
 
