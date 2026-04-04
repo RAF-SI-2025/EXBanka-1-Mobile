@@ -20,7 +20,8 @@ final class HomeViewModel: ObservableObject {
         do {
             let profile: ClientProfile = try await APIClient.shared.request(
                 endpoint: .me,
-                accessToken: token
+                accessToken: token,
+                deviceId: appState.deviceId
             )
             self.profile = profile
             appState.currentUser = profile

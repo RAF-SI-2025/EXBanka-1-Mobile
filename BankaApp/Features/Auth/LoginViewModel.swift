@@ -30,7 +30,7 @@ final class LoginViewModel: ObservableObject {
             )
             KeychainService.saveAccessToken(response.accessToken)
             KeychainService.saveRefreshToken(response.refreshToken)
-            appState.login(accessToken: response.accessToken, refreshToken: response.refreshToken)
+            appState.restoreSession(accessToken: response.accessToken, refreshToken: response.refreshToken, deviceId: "")
 
             let profile: ClientProfile = try await APIClient.shared.request(
                 endpoint: .me,

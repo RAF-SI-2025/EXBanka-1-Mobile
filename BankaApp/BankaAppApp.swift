@@ -7,12 +7,18 @@ struct BankaAppApp: App {
 
     init() {
         if let accessToken = KeychainService.loadAccessToken(),
-           let refreshToken = KeychainService.loadRefreshToken() {
-            AppState.shared.login(accessToken: accessToken, refreshToken: refreshToken)
+           let refreshToken = KeychainService.loadRefreshToken(),
+           let deviceId = KeychainService.loadDeviceId() {
+            AppState.shared.restoreSession(
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+                deviceId: deviceId
+            )
             Task {
                 let profile = try? await APIClient.shared.request(
                     endpoint: .me,
-                    accessToken: accessToken
+                    accessToken: accessToken,
+                    deviceId: deviceId
                 ) as ClientProfile
                 await MainActor.run { AppState.shared.currentUser = profile }
             }
@@ -33,10 +39,10 @@ struct RootView: View {
     @EnvironmentObject var appState: AppState
 
     var body: some View {
-        if appState.isLoggedIn {
+        if appState.isActivated {
             HomeView()
         } else {
-            LoginView()
+            ActivationRequestView()
         }
     }
 }
