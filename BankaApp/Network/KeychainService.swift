@@ -4,6 +4,8 @@ import Security
 enum KeychainService {
     private static let accessTokenKey = "banka.access_token"
     private static let refreshTokenKey = "banka.refresh_token"
+    private static let deviceIdKey = "banka.device_id"
+    private static let deviceSecretKey = "banka.device_secret"
 
     static func saveAccessToken(_ token: String) {
         save(key: accessTokenKey, value: token)
@@ -21,9 +23,27 @@ enum KeychainService {
         load(key: refreshTokenKey)
     }
 
+    static func saveDeviceId(_ id: String) {
+        save(key: deviceIdKey, value: id)
+    }
+
+    static func loadDeviceId() -> String? {
+        load(key: deviceIdKey)
+    }
+
+    static func saveDeviceSecret(_ secret: String) {
+        save(key: deviceSecretKey, value: secret)
+    }
+
+    static func loadDeviceSecret() -> String? {
+        load(key: deviceSecretKey)
+    }
+
     static func deleteAll() {
         delete(key: accessTokenKey)
         delete(key: refreshTokenKey)
+        delete(key: deviceIdKey)
+        delete(key: deviceSecretKey)
     }
 
     private static func save(key: String, value: String) {
