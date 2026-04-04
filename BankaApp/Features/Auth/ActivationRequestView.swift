@@ -64,7 +64,7 @@ struct ActivationRequestView: View {
                     Spacer()
                 }
             }
-            .onChange(of: viewModel.codeSent) { sent in
+            .onChange(of: viewModel.codeSent) { _, sent in
                 if sent { navigateToCode = true }
             }
             .navigationDestination(isPresented: $navigateToCode) {

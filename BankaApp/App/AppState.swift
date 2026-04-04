@@ -4,11 +4,12 @@ import Combine
 @MainActor
 final class AppState: ObservableObject {
     enum AuthState {
+        case loading
         case notActivated
         case activated
     }
 
-    @Published var authState: AuthState = .notActivated
+    @Published var authState: AuthState = .loading
     @Published var currentUser: ClientProfile?
     @Published var accessToken: String?
     @Published var refreshToken: String?
