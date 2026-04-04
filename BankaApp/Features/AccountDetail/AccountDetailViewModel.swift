@@ -22,7 +22,8 @@ final class AccountDetailViewModel: ObservableObject {
         do {
             let response: PaymentsResponse = try await APIClient.shared.request(
                 endpoint: .paymentsForAccount(accountNumber: accountNumber),
-                accessToken: token
+                accessToken: token,
+                deviceId: appState.deviceId
             )
             self.payments = response.payments
         } catch {
